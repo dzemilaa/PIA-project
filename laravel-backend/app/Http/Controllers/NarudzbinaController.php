@@ -82,6 +82,19 @@ class NarudzbinaController extends Controller
         return response()->json(['poruka' => 'Narudžbina je uspešno ažurirana.', 'narudzbina' => $result]);
     }
 
+    public function updateStatus(Request $request, $id)
+    {
+        $result = $this->findOrFail($id);
+        if ($result instanceof \Illuminate\Http\JsonResponse) return $result;
+
+        $data = $request->validate([
+            'status' => 'required|in:u obradi,u izradi,završeno,otkazano',
+        ]);
+
+        $result->update($data);
+        return response()->json(['poruka' => 'Status je uspešno ažuriran.', 'narudzbina' => $result]);
+    }
+
     public function destroy($id)
     {
         $result = $this->findOrFail($id);

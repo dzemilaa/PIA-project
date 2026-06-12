@@ -20,7 +20,7 @@ export interface Narudzbina {
   providedIn: 'root'
 })
 export class OrderService {
-  private readonly apiUrl = 'http://localhost:8000/api/narudzbine';
+  private readonly apiUrl = 'https://pia-backend-latest.onrender.com/api/narudzbine';
 
   constructor(private http: HttpClient) {}
 
@@ -38,6 +38,10 @@ export class OrderService {
 
   updateOrder(id: number, order: Narudzbina): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, order);
+  }
+
+  updateStatus(id: number, status: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/status`, { status });
   }
 
   deleteOrder(id: number): Observable<any> {

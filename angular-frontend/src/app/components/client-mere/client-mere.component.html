@@ -1,136 +1,91 @@
-<div class="modal-header bg-light">
-  <h5 class="modal-title fw-bold text-dark">Mere klijenta</h5>
-  <button type="button" class="btn-close" (click)="zatvoriModal()"></button>
+<div class="modal-header">
+  <h2 class="text-lg font-bold text-gray-900">Mere klijenta</h2>
+  <button type="button" (click)="zatvoriModal()" class="p-1 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+  </button>
 </div>
 
-<div class="modal-body">
+<div class="modal-body space-y-3">
   @if (greskaPoruka()) {
-    <div class="alert alert-danger py-2" role="alert">
-      {{ greskaPoruka() }}
-    </div>
+    <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">{{ greskaPoruka() }}</div>
   }
 
   @if (listaMera().length === 0) {
-    <div class="text-center text-muted py-3">
-      Nema unetih mera za ovog klijenta.
-    </div>
+    <p class="text-center text-gray-400 py-6">Nema unetih mera za ovog klijenta.</p>
   }
 
   @for (m of listaMera(); track m.mereid) {
-    <div class="card border border-light-subtle bg-light mb-3 shadow-sm">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h6 class="card-title fw-bold text-primary mb-0">
-            {{ m.tipodece }}
-            <small class="text-muted fw-normal ms-2">({{ m.datumunosa | date:'dd.MM.yyyy' }})</small>
-          </h6>
-          @if (authService.canEdit()) {
-            <button (click)="obrisiMeru(m.mereid)" class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size: 11px;">
-              Obrisi
-            </button>
-          }
+    <div class="border border-gray-100 rounded-xl p-4 bg-gray-50">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <span class="font-semibold text-blue-700">{{ m.tipodece }}</span>
+          <span class="text-xs text-gray-400 ml-2">{{ m.datumunosa | date:'dd.MM.yyyy' }}</span>
         </div>
-        <div class="row text-secondary small">
-          <div class="col-6 col-sm-3">Obim grudi: <strong class="text-dark">{{ m.obimgrudi }} cm</strong></div>
-          <div class="col-6 col-sm-3">Obim struka: <strong class="text-dark">{{ m.obimstruka }} cm</strong></div>
-          <div class="col-6 col-sm-3">Obim kukova: <strong class="text-dark">{{ m.obimkukova }} cm</strong></div>
-          <div class="col-6 col-sm-3">Duzina rukava: <strong class="text-dark">{{ m.duzinarukava }} cm</strong></div>
-        </div>
+        @if (authService.canEdit()) {
+          <button (click)="obrisiMeru(m.mereid)" class="btn-danger btn-sm">Obriši</button>
+        }
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+        <div>Obim grudi: <strong class="text-gray-900">{{ m.obimgrudi }} cm</strong></div>
+        <div>Obim struka: <strong class="text-gray-900">{{ m.obimstruka }} cm</strong></div>
+        <div>Obim kukova: <strong class="text-gray-900">{{ m.obimkukova }} cm</strong></div>
+        <div>Dužina rukava: <strong class="text-gray-900">{{ m.duzinarukava }} cm</strong></div>
       </div>
     </div>
   }
 
   @if (authService.canEdit()) {
-    <button (click)="toggleForma()" class="btn btn-outline-primary btn-sm mb-3">
-      @if (prikaziFormuZaMere()) {
-        Otkaži unos mera
-      } @else {
-        Dodaj nove mere
-      }
+    <button (click)="toggleForma()"
+      class="btn-outline btn-sm w-full">
+      {{ prikaziFormuZaMere() ? 'Otkaži unos mera' : '+ Dodaj nove mere' }}
     </button>
   }
 
   @if (authService.canEdit() && prikaziFormuZaMere()) {
-    <div class="p-3 border rounded bg-white shadow-inner">
-      <form [formGroup]="mereForm" (ngSubmit)="sacuvajMere()" novalidate>
-        <div class="mb-3">
-          <label for="tipodece" class="form-label text-secondary fw-semibold small">Tip odece *</label>
-          <input
-            type="text"
-            id="tipodece"
-            formControlName="tipodece"
-            class="form-control"
-            [class.is-invalid]="f['tipodece'].invalid && (f['tipodece'].dirty || f['tipodece'].touched)"
-          />
+    <div class="border border-gray-200 rounded-xl p-4 bg-white">
+      <form [formGroup]="mereForm" (ngSubmit)="sacuvajMere()" novalidate class="space-y-4">
+        <div>
+          <label for="tipodece" class="form-label">Tip odeće *</label>
+          <input type="text" id="tipodece" formControlName="tipodece"
+            [class]="f['tipodece'].invalid && (f['tipodece'].dirty || f['tipodece'].touched) ? 'form-input-error' : 'form-input'" />
           @if (f['tipodece'].invalid && (f['tipodece'].dirty || f['tipodece'].touched)) {
-            <div class="text-danger small mt-1">
-              Tip odece je obavezno polje.
-            </div>
+            <p class="form-error">Tip odeće je obavezno polje.</p>
           }
         </div>
 
-        <div class="row g-2 mb-3">
-          <div class="col-md-6">
-            <label for="obimgrudi" class="form-label text-secondary fw-semibold small">Obim grudi (cm) *</label>
-            <input
-              type="number"
-              id="obimgrudi"
-              formControlName="obimgrudi"
-              class="form-control"
-              [class.is-invalid]="f['obimgrudi'].invalid && (f['obimgrudi'].dirty || f['obimgrudi'].touched)"
-            />
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="obimgrudi" class="form-label">Obim grudi (cm) *</label>
+            <input type="number" id="obimgrudi" formControlName="obimgrudi"
+              [class]="f['obimgrudi'].invalid && (f['obimgrudi'].dirty || f['obimgrudi'].touched) ? 'form-input-error' : 'form-input'" />
           </div>
-
-          <div class="col-md-6">
-            <label for="obimstruka" class="form-label text-secondary fw-semibold small">Obim struka (cm) *</label>
-            <input
-              type="number"
-              id="obimstruka"
-              formControlName="obimstruka"
-              class="form-control"
-              [class.is-invalid]="f['obimstruka'].invalid && (f['obimstruka'].dirty || f['obimstruka'].touched)"
-            />
+          <div>
+            <label for="obimstruka" class="form-label">Obim struka (cm) *</label>
+            <input type="number" id="obimstruka" formControlName="obimstruka"
+              [class]="f['obimstruka'].invalid && (f['obimstruka'].dirty || f['obimstruka'].touched) ? 'form-input-error' : 'form-input'" />
           </div>
-        </div>
-
-        <div class="row g-2 mb-3">
-          <div class="col-md-6">
-            <label for="obimkukova" class="form-label text-secondary fw-semibold small">Obim kukova (cm) *</label>
-            <input
-              type="number"
-              id="obimkukova"
-              formControlName="obimkukova"
-              class="form-control"
-              [class.is-invalid]="f['obimkukova'].invalid && (f['obimkukova'].dirty || f['obimkukova'].touched)"
-            />
+          <div>
+            <label for="obimkukova" class="form-label">Obim kukova (cm) *</label>
+            <input type="number" id="obimkukova" formControlName="obimkukova"
+              [class]="f['obimkukova'].invalid && (f['obimkukova'].dirty || f['obimkukova'].touched) ? 'form-input-error' : 'form-input'" />
           </div>
-
-          <div class="col-md-6">
-            <label for="duzinarukava" class="form-label text-secondary fw-semibold small">Duzina rukava (cm) *</label>
-            <input
-              type="number"
-              id="duzinarukava"
-              formControlName="duzinarukava"
-              class="form-control"
-              [class.is-invalid]="f['duzinarukava'].invalid && (f['duzinarukava'].dirty || f['duzinarukava'].touched)"
-            />
+          <div>
+            <label for="duzinarukava" class="form-label">Dužina rukava (cm) *</label>
+            <input type="number" id="duzinarukava" formControlName="duzinarukava"
+              [class]="f['duzinarukava'].invalid && (f['duzinarukava'].dirty || f['duzinarukava'].touched) ? 'form-input-error' : 'form-input'" />
           </div>
         </div>
 
         @if (mereForm.invalid && (mereForm.dirty || mereForm.touched)) {
-          <div class="text-danger small mb-3">
-            Popunite sva obavezna polja. Mere moraju biti od 40 do 150 cm.
-          </div>
+          <p class="form-error">Popunite sva polja. Mere moraju biti od 40 do 150 cm.</p>
         }
 
-        <button type="submit" class="btn btn-primary btn-sm w-100" [disabled]="slanje()">
-          Sacuvaj mere
-        </button>
+        <button type="submit" class="btn-primary w-full" [disabled]="slanje()">Sačuvaj mere</button>
       </form>
     </div>
   }
 </div>
 
-<div class="modal-footer bg-light">
-  <button type="button" class="btn btn-secondary btn-sm" (click)="zatvoriModal()">Zatvori</button>
+<div class="modal-footer">
+  <button type="button" (click)="zatvoriModal()" class="btn-secondary">Zatvori</button>
 </div>

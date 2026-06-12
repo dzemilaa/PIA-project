@@ -1,48 +1,76 @@
 @if (isLoggedIn()) {
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-    <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/klijenti">
-        <i class="bi bi-scissors text-primary fs-3"></i>
-        <span class="fw-bold text-uppercase tracking-wider">Atelier Bella</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded" routerLink="/klijenti" routerLinkActive="active bg-primary text-white">
-              <i class="bi bi-people-fill"></i> Klijenti
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 px-3 py-2 rounded" routerLink="/narudzbine" routerLinkActive="active bg-primary text-white">
-              <i class="bi bi-cart-fill"></i> Narudžbine
-            </a>
-          </li>
-          <li class="nav-item">
-            <span class="badge bg-secondary text-uppercase">
-              @if (isAdmin()) {
-                Admin
-              } @else {
-                Krojač
-              }
-            </span>
-          </li>
-          <li class="nav-item">
-            <button type="button" class="btn btn-outline-light btn-sm" (click)="odjaviSe()">
-              <i class="bi bi-box-arrow-right"></i> Odjava
-            </button>
-          </li>
-        </ul>
+  <nav class="bg-gray-900 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a routerLink="/klijenti" (click)="zatvoriMenu()" class="flex items-center gap-2 text-white font-bold text-lg tracking-wide">
+          <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"/>
+          </svg>
+          Atelier Bella
+        </a>
+
+        <!-- Desktop nav -->
+        <div class="hidden md:flex items-center gap-4">
+          <a routerLink="/klijenti" routerLinkActive="bg-blue-600 text-white"
+             class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+            Klijenti
+          </a>
+          <a routerLink="/narudzbine" routerLinkActive="bg-blue-600 text-white"
+             class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/></svg>
+            Narudžbine
+          </a>
+          <span class="px-2 py-1 rounded-full text-xs font-semibold bg-gray-700 text-gray-300 uppercase">
+            {{ isAdmin() ? 'Admin' : 'Krojač' }}
+          </span>
+          <button (click)="odjaviSe()" class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            Odjava
+          </button>
+        </div>
+
+        <!-- Mobile right -->
+        <div class="flex items-center gap-2 md:hidden">
+          <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-700 text-gray-300 uppercase">
+            {{ isAdmin() ? 'Admin' : 'Krojač' }}
+          </span>
+          <button (click)="toggleMenu()" class="p-2 rounded-lg text-gray-400 hover:bg-gray-700 transition-colors">
+            @if (menuOtvoren()) {
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            } @else {
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            }
+          </button>
+        </div>
       </div>
     </div>
+
+    <!-- Mobile menu -->
+    @if (menuOtvoren()) {
+      <div class="md:hidden border-t border-gray-700 px-4 py-3 flex flex-col gap-1">
+        <a routerLink="/klijenti" routerLinkActive="bg-blue-600 text-white"
+           (click)="zatvoriMenu()"
+           class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+          Klijenti
+        </a>
+        <a routerLink="/narudzbine" routerLinkActive="bg-blue-600 text-white"
+           (click)="zatvoriMenu()"
+           class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-gray-700 transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/></svg>
+          Narudžbine
+        </a>
+        <button (click)="odjaviSe()" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-gray-700 transition-colors w-full">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Odjava
+        </button>
+      </div>
+    }
   </nav>
 
-  <main class="py-4 bg-light min-vh-100">
-    <div class="container">
-      <router-outlet></router-outlet>
-    </div>
+  <main class="min-h-screen bg-gray-50 py-4 md:py-8">
+    <router-outlet></router-outlet>
   </main>
 } @else {
   <router-outlet></router-outlet>

@@ -131,7 +131,17 @@ export class OrderFormComponent implements OnInit {
 
     this.slanje.set(true);
     this.greskaPoruka.set('');
-    const formValues: Narudzbina = this.orderForm.getRawValue();
+    const raw = this.orderForm.getRawValue();
+    const formValues: Narudzbina = {
+      klijentid: +raw.klijentid,
+      tipodece: raw.tipodece,
+      rokizrade: raw.rokizrade,
+      rokprobe: raw.rokprobe,
+      rokisporuke: raw.rokisporuke,
+      cena: raw.cena,
+      status: raw.status,
+      napomene: raw.napomene,
+    };
     if (!this.narudzbina) {
       formValues.status = 'u obradi';
     }

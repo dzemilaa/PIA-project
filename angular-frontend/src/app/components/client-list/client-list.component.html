@@ -1,105 +1,115 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-dark fw-bold">Upravljanje Klijentima</h2>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-xl font-bold text-gray-900">Klijenti</h1>
     @if (authService.canEdit()) {
-      <button (click)="otvoriDodavanje()" class="btn btn-primary d-flex align-items-center gap-1">
-        <i class="bi bi-plus-lg"></i> Dodaj Klijenta
+      <button (click)="otvoriDodavanje()" class="btn-primary btn-sm flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        <span class="hidden sm:inline">Dodaj klijenta</span>
+        <span class="sm:hidden">Dodaj</span>
       </button>
     }
   </div>
 
-  <div class="row mb-3">
-    <div class="col-md-4">
-      <input
-        type="text"
-        [(ngModel)]="pretragaText"
-        (input)="pretrazi()"
-        placeholder="Pretrazi klijente..."
-        class="form-control"
-      />
-    </div>
+  <div class="mb-4">
+    <input type="text" [(ngModel)]="pretragaText" (input)="pretrazi()"
+      placeholder="Pretraži klijente..." class="form-input max-w-sm" />
   </div>
 
   @if (greskaPoruka()) {
-    <div class="alert alert-danger" role="alert">
+    <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
       {{ greskaPoruka() }}
     </div>
   }
 
   @if (!greskaPoruka()) {
-    <div class="table-responsive bg-white shadow-sm rounded">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light text-secondary">
+    <!-- Desktop tabela -->
+    <div class="hidden md:block card overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b border-gray-100">
           <tr>
-            <th>Ime i prezime</th>
-            <th>Telefon</th>
-            <th>E-mail adresa</th>
-            <th>Napomene</th>
-            <th class="text-end">Akcije</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Klijent</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Telefon</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">E-mail</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Napomene</th>
+            <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Akcije</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-gray-50">
           @for (k of filtriraniKlijenti(); track k.klijentid) {
-            <tr>
-              <td>
-                <div class="d-flex align-items-center gap-2">
-                  <div
-                    class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold"
-                    style="width: 32px; height: 32px; font-size: 14px;"
-                  >
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
                     {{ k.ime.charAt(0).toUpperCase() }}
                   </div>
-                  <span class="fw-semibold text-dark">{{ k.ime }} {{ k.prezime }}</span>
+                  <span class="font-medium text-gray-900">{{ k.ime }} {{ k.prezime }}</span>
                 </div>
               </td>
-              <td>{{ k.telefon }}</td>
-              <td><span class="text-muted">{{ k.email }}</span></td>
-              <td class="text-truncate" style="max-width: 200px;">{{ k.napomene || '-' }}</td>
-              <td class="text-end">
-                <div class="btn-group btn-group-sm">
-                  <button (click)="otvoriMere(k.klijentid)" class="btn btn-outline-info">
-                    Mere
-                  </button>
+              <td class="px-4 py-3 text-gray-600">{{ k.telefon }}</td>
+              <td class="px-4 py-3 text-gray-500">{{ k.email }}</td>
+              <td class="px-4 py-3 text-gray-500 max-w-xs truncate">{{ k.napomene || '-' }}</td>
+              <td class="px-4 py-3">
+                <div class="flex items-center justify-end gap-1">
+                  <button (click)="otvoriMere(k.klijentid)" class="btn-info btn-sm">Mere</button>
                   @if (authService.canEdit()) {
-                    <button (click)="otvoriIzmenu(k)" class="btn btn-outline-warning">
-                      Izmeni
-                    </button>
-                    <button (click)="obrisiKlijenta(k.klijentid)" class="btn btn-outline-danger">
-                      Obrisi
-                    </button>
+                    <button (click)="otvoriIzmenu(k)" class="btn-warning btn-sm">Izmeni</button>
+                    <button (click)="obrisiKlijenta(k.klijentid)" class="btn-danger btn-sm">Obriši</button>
                   }
                 </div>
               </td>
             </tr>
           }
           @if (filtriraniKlijenti().length === 0) {
-            <tr>
-              <td colspan="5" class="text-center py-4 text-muted">
-                Nema pronadjenih klijenata.
-              </td>
-            </tr>
+            <tr><td colspan="5" class="text-center py-8 text-gray-400">Nema pronađenih klijenata.</td></tr>
           }
         </tbody>
       </table>
     </div>
+
+    <!-- Mobile kartice -->
+    <div class="md:hidden space-y-3">
+      @for (k of filtriraniKlijenti(); track k.klijentid) {
+        <div class="card p-4">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold flex-shrink-0">
+              {{ k.ime.charAt(0).toUpperCase() }}
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900">{{ k.ime }} {{ k.prezime }}</div>
+              <div class="text-sm text-gray-500">{{ k.email }}</div>
+            </div>
+          </div>
+          <div class="text-sm text-gray-600 mb-1">📞 {{ k.telefon }}</div>
+          @if (k.napomene) {
+            <div class="text-sm text-gray-500 mb-3">💬 {{ k.napomene }}</div>
+          }
+          <div class="flex gap-2 mt-3">
+            <button (click)="otvoriMere(k.klijentid)" class="btn-info btn-sm flex-1">Mere</button>
+            @if (authService.canEdit()) {
+              <button (click)="otvoriIzmenu(k)" class="btn-warning btn-sm flex-1">Izmeni</button>
+              <button (click)="obrisiKlijenta(k.klijentid)" class="btn-danger btn-sm flex-1">Obriši</button>
+            }
+          </div>
+        </div>
+      }
+      @if (filtriraniKlijenti().length === 0) {
+        <p class="text-center py-8 text-gray-400">Nema pronađenih klijenata.</p>
+      }
+    </div>
   }
 
   @if (prikaziFormu) {
-    <div class="modal d-block bg-dark bg-opacity-50" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <app-client-form [klijent]="odabraniKlijentZaIzmenu" (zatvori)="zatvoriFormu($event)"></app-client-form>
-        </div>
+    <div class="modal-overlay">
+      <div class="modal-box">
+        <app-client-form [klijent]="odabraniKlijentZaIzmenu" (zatvori)="zatvoriFormu($event)"></app-client-form>
       </div>
     </div>
   }
 
   @if (odabraniKlijentIdForMere !== null) {
-    <div class="modal d-block bg-dark bg-opacity-50" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-          <app-client-mere [klijentId]="odabraniKlijentIdForMere" (zatvori)="zatvoriMere()"></app-client-mere>
-        </div>
+    <div class="modal-overlay">
+      <div class="modal-box-lg">
+        <app-client-mere [klijentId]="odabraniKlijentIdForMere" (zatvori)="zatvoriMere()"></app-client-mere>
       </div>
     </div>
   }

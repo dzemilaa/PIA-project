@@ -18,7 +18,7 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly apiUrl = 'http://localhost:8000/api';
+  private readonly apiUrl = 'https://pia-backend-latest.onrender.com/api';
   private readonly tokenKey = 'auth_token';
   private readonly userKey = 'auth_user';
   private readonly storage = sessionStorage;

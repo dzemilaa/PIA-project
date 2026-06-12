@@ -1,72 +1,60 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-dark fw-bold">Upravljanje Narudzbinama</h2>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-xl font-bold text-gray-900">Narudžbine</h1>
     @if (authService.canEdit()) {
-      <button (click)="otvoriDodavanje()" class="btn btn-primary d-flex align-items-center gap-1">
-        <i class="bi bi-plus-lg"></i> Nova Narudzbina
+      <button (click)="otvoriDodavanje()" class="btn-primary btn-sm flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        <span class="hidden sm:inline">Nova narudžbina</span>
+        <span class="sm:hidden">Nova</span>
       </button>
     }
   </div>
 
-  <div class="row mb-3">
-    <div class="col-md-4">
-      <input
-        type="text"
-        [(ngModel)]="pretragaText"
-        (input)="pretrazi()"
-        placeholder="Pretrazi narudzbine..."
-        class="form-control"
-      />
-    </div>
+  <div class="mb-4">
+    <input type="text" [(ngModel)]="pretragaText" (input)="pretrazi()"
+      placeholder="Pretraži narudžbine..." class="form-input max-w-sm" />
   </div>
 
   @if (greskaPoruka()) {
-    <div class="alert alert-danger" role="alert">
+    <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
       {{ greskaPoruka() }}
     </div>
   }
 
   @if (!greskaPoruka()) {
-    <div class="table-responsive bg-white shadow-sm rounded">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light text-secondary">
+    <!-- Desktop tabela -->
+    <div class="hidden md:block card overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b border-gray-100">
           <tr>
-            <th>Narudzbina</th>
-            <th>Klijent</th>
-            <th>Rok isporuke</th>
-            <th>Status</th>
-            <th>Cena</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Narudžbina</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Klijent</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Rok isporuke</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Cena</th>
             @if (authService.canEdit()) {
-              <th class="text-end">Akcije</th>
+              <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Akcije</th>
             }
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-gray-50">
           @for (n of filtriraneNarudzbine(); track n.narudzbinaid) {
-            <tr>
-              <td>
-                <span class="fw-semibold text-dark">{{ n.tipodece }}</span>
-                <div class="small text-muted">ID: #{{ n.narudzbinaid }}</div>
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3">
+                <div class="font-medium text-gray-900">{{ n.tipodece }}</div>
+                <div class="text-xs text-gray-400">#{{ n.narudzbinaid }}</div>
               </td>
-              <td>{{ n.klijentImePrezime }}</td>
-              <td>
-                <div class="fw-medium text-secondary">{{ n.rokisporuke | date:'dd.MM.yyyy' }}</div>
-                <div class="text-muted small" style="font-size: 11px;">
-                  Kreirano: {{ n.datumkreiranja | date:'dd.MM.yyyy' }}
-                </div>
+              <td class="px-4 py-3 text-gray-600">{{ n.klijentImePrezime }}</td>
+              <td class="px-4 py-3">
+                <div class="text-gray-700">{{ n.rokisporuke | date:'dd.MM.yyyy' }}</div>
+                <div class="text-xs text-gray-400">Kr: {{ n.datumkreiranja | date:'dd.MM.yyyy' }}</div>
               </td>
-              <td>
-                <div class="d-flex align-items-center gap-2">
-                  <span class="badge" [ngClass]="statusKlasa(n.status)" style="font-size: 11px;">
-                    {{ n.status }}
-                  </span>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-2">
+                  <span [class]="statusKlasa(n.status)">{{ n.status }}</span>
                   @if (authService.canEdit()) {
-                    <select
-                      [ngModel]="n.status"
-                      (ngModelChange)="promeniStatus(n, $event)"
-                      class="form-select form-select-sm py-0 border-light-subtle"
-                      style="width: auto; font-size: 11px;"
-                    >
+                    <select [ngModel]="n.status" (ngModelChange)="promeniStatus(n, $event)"
+                      class="text-xs border border-gray-200 rounded px-1 py-0.5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-400">
                       <option value="u obradi">u obradi</option>
                       <option value="u izradi">u izradi</option>
                       <option value="završeno">završeno</option>
@@ -75,39 +63,64 @@
                   }
                 </div>
               </td>
-              <td><strong class="text-dark">{{ n.cena | number:'1.2-2' }} RSD</strong></td>
+              <td class="px-4 py-3 font-semibold text-gray-900">{{ n.cena | number:'1.2-2' }} RSD</td>
               @if (authService.canEdit()) {
-                <td class="text-end">
-                  <div class="btn-group btn-group-sm">
-                    <button (click)="otvoriIzmenu(n)" class="btn btn-outline-warning">
-                      Uredi
-                    </button>
-                    <button (click)="obrisiNarudzbinu(n.narudzbinaid)" class="btn btn-outline-danger">
-                      Obrisi
-                    </button>
+                <td class="px-4 py-3">
+                  <div class="flex items-center justify-end gap-1">
+                    <button (click)="otvoriIzmenu(n)" class="btn-warning btn-sm">Uredi</button>
+                    <button (click)="obrisiNarudzbinu(n.narudzbinaid)" class="btn-danger btn-sm">Obriši</button>
                   </div>
                 </td>
               }
             </tr>
           }
           @if (filtriraneNarudzbine().length === 0) {
-            <tr>
-              <td [attr.colspan]="authService.canEdit() ? 6 : 5" class="text-center py-4 text-muted">
-                Nema pronadjenih narudzbina.
-              </td>
-            </tr>
+            <tr><td [attr.colspan]="authService.canEdit() ? 6 : 5" class="text-center py-8 text-gray-400">Nema pronađenih narudžbina.</td></tr>
           }
         </tbody>
       </table>
     </div>
+
+    <!-- Mobile kartice -->
+    <div class="md:hidden space-y-3">
+      @for (n of filtriraneNarudzbine(); track n.narudzbinaid) {
+        <div class="card p-4">
+          <div class="flex items-start justify-between mb-2">
+            <div>
+              <div class="font-semibold text-gray-900">{{ n.tipodece }}</div>
+              <div class="text-sm text-gray-500">{{ n.klijentImePrezime }}</div>
+            </div>
+            <span [class]="statusKlasa(n.status)">{{ n.status }}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-1 text-sm text-gray-600 mb-3">
+            <div>📅 {{ n.rokisporuke | date:'dd.MM.yyyy' }}</div>
+            <div>💰 {{ n.cena | number:'1.2-2' }} RSD</div>
+          </div>
+          @if (authService.canEdit()) {
+            <select [ngModel]="n.status" (ngModelChange)="promeniStatus(n, $event)"
+              class="form-input mb-2 text-sm">
+              <option value="u obradi">u obradi</option>
+              <option value="u izradi">u izradi</option>
+              <option value="završeno">završeno</option>
+              <option value="otkazano">otkazano</option>
+            </select>
+            <div class="flex gap-2">
+              <button (click)="otvoriIzmenu(n)" class="btn-warning btn-sm flex-1">Uredi</button>
+              <button (click)="obrisiNarudzbinu(n.narudzbinaid)" class="btn-danger btn-sm flex-1">Obriši</button>
+            </div>
+          }
+        </div>
+      }
+      @if (filtriraneNarudzbine().length === 0) {
+        <p class="text-center py-8 text-gray-400">Nema pronađenih narudžbina.</p>
+      }
+    </div>
   }
 
   @if (prikaziFormu) {
-    <div class="modal d-block bg-dark bg-opacity-50" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-          <app-order-form [narudzbina]="odabranaNarudzbinaZaIzmenu" (zatvori)="zatvoriFormu($event)"></app-order-form>
-        </div>
+    <div class="modal-overlay">
+      <div class="modal-box-lg">
+        <app-order-form [narudzbina]="odabranaNarudzbinaZaIzmenu" (zatvori)="zatvoriFormu($event)"></app-order-form>
       </div>
     </div>
   }

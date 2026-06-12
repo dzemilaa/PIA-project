@@ -26,7 +26,7 @@ export interface Mere {
   providedIn: 'root'
 })
 export class ClientService {
-  private readonly apiUrl = 'http://localhost:8000/api/klijenti';
+  private readonly apiUrl = 'https://pia-backend-latest.onrender.com/api/klijenti';
 
   constructor(private http: HttpClient) {}
 

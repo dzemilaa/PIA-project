@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/klijenti/{id}/mere/{mereid}', [KlijentController::class, 'obrisiMere']);
         Route::post('/narudzbine', [NarudzbinaController::class, 'store']);
         Route::put('/narudzbine/{id}', [NarudzbinaController::class, 'update']);
+        Route::patch('/narudzbine/{id}/status', [NarudzbinaController::class, 'updateStatus']);
         Route::delete('/narudzbine/{id}', [NarudzbinaController::class, 'destroy']);
     });
 });

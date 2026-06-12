@@ -57,29 +57,24 @@ export class OrderListComponent implements OnInit {
 
   statusKlasa(status: string): string {
     switch (status) {
-      case 'u obradi':
-        return 'bg-warning text-dark';
-      case 'u izradi':
-        return 'bg-info text-white';
-      case 'završeno':
-        return 'bg-success text-white';
-      case 'otkazano':
-        return 'bg-danger text-white';
-      default:
-        return 'bg-secondary text-white';
+      case 'u obradi':  return 'badge badge-yellow';
+      case 'u izradi':  return 'badge badge-blue';
+      case 'završeno':  return 'badge badge-green';
+      case 'otkazano':  return 'badge badge-red';
+      default:          return 'badge badge-gray';
     }
   }
 
   promeniStatus(order: Narudzbina, noviStatus: string): void {
-    const updatedOrder = { ...order, status: noviStatus as Narudzbina['status'] };
-    if (order.narudzbinaid) {
-      this.orderService.updateOrder(order.narudzbinaid, updatedOrder).subscribe({
-        next: () => {
-          order.status = noviStatus as Narudzbina['status'];
-          this.pretrazi();
-        }
-      });
-    }
+    if (!order.narudzbinaid) return;
+    this.orderService.updateStatus(order.narudzbinaid, noviStatus).subscribe({
+      next: () => {
+        this.narudzbine.update(list =>
+          list.map(n => n.narudzbinaid === order.narudzbinaid ? { ...n, status: noviStatus as Narudzbina['status'] } : n)
+        );
+        this.pretrazi();
+      }
+    });
   }
 
   obrisiNarudzbinu(id: number | undefined): void {

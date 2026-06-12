@@ -19,9 +19,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:4200'],
+    'allowed_origins' => ['http://localhost:4200', 'https://pia-project-three.vercel.app', 'https://pia-project-ten.vercel.app'],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => ['#^https://.*\.vercel\.app$#'],
 
     'allowed_headers' => ['*'],
 
