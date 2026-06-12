@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* Premium design enhancements */
+body {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.navbar-brand {
+  letter-spacing: 0.05em;
+}
+
+.nav-link {
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.nav-link.active {
+  font-weight: 600;
+}

@@ -1,0 +1,103 @@
+<div class="modal-header bg-light">
+  <h5 class="modal-title fw-bold text-dark">
+    {{ klijent ? 'Izmeni klijenta' : 'Dodaj klijenta' }}
+  </h5>
+  <button type="button" class="btn-close" (click)="otkazi()"></button>
+</div>
+
+<div class="modal-body">
+  <!-- Greška sa backend-a -->
+  @if (greskaPoruka()) {
+    <div class="alert alert-danger py-2" role="alert">
+      {{ greskaPoruka() }}
+    </div>
+  }
+
+  <form [formGroup]="klijentForm" (ngSubmit)="potvrdi()" novalidate>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="ime" class="form-label text-secondary fw-semibold small">Ime *</label>
+        <input type="text" id="ime" formControlName="ime" class="form-control"
+               [class.is-invalid]="f['ime'].invalid && (f['ime'].dirty || f['ime'].touched)" />
+        @if (f['ime'].invalid && (f['ime'].dirty || f['ime'].touched)) {
+          <div class="text-danger small mt-1">
+            @if (f['ime'].errors?.['required']) {
+              <span>Ime je obavezno polje.</span>
+            }
+            @if (f['ime'].errors?.['pattern']) {
+              <span>Ime sme da sadrži samo slova.</span>
+            }
+            @if (f['ime'].errors?.['maxlength']) {
+              <span>Ime može imati najviše 50 karaktera.</span>
+            }
+          </div>
+        }
+      </div>
+      <div class="col-md-6">
+        <label for="prezime" class="form-label text-secondary fw-semibold small">Prezime *</label>
+        <input type="text" id="prezime" formControlName="prezime" class="form-control"
+               [class.is-invalid]="f['prezime'].invalid && (f['prezime'].dirty || f['prezime'].touched)" />
+        @if (f['prezime'].invalid && (f['prezime'].dirty || f['prezime'].touched)) {
+          <div class="text-danger small mt-1">
+            @if (f['prezime'].errors?.['required']) {
+              <span>Prezime je obavezno polje.</span>
+            }
+            @if (f['prezime'].errors?.['pattern']) {
+              <span>Prezime sme da sadrži samo slova.</span>
+            }
+            @if (f['prezime'].errors?.['maxlength']) {
+              <span>Prezime može imati najviše 50 karaktera.</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="telefon" class="form-label text-secondary fw-semibold small">Telefon *</label>
+      <input type="text" id="telefon" formControlName="telefon" class="form-control"
+             [class.is-invalid]="f['telefon'].invalid && (f['telefon'].dirty || f['telefon'].touched)" />
+      @if (f['telefon'].invalid && (f['telefon'].dirty || f['telefon'].touched)) {
+        <div class="text-danger small mt-1">
+          @if (f['telefon'].errors?.['required']) {
+            <span>Telefon je obavezan za unos.</span>
+          }
+          @if (f['telefon'].errors?.['pattern']) {
+            <span>Telefon sme da sadrži samo brojeve.</span>
+          }
+          @if (f['telefon'].errors?.['maxlength']) {
+            <span>Telefon može imati najviše 20 cifara.</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label text-secondary fw-semibold small">E-mail adresa *</label>
+      <input type="email" id="email" formControlName="email" class="form-control"
+             [class.is-invalid]="f['email'].invalid && (f['email'].dirty || f['email'].touched)" />
+      @if (f['email'].invalid && (f['email'].dirty || f['email'].touched)) {
+        <div class="text-danger small mt-1">
+          @if (f['email'].errors?.['required']) {
+            <span>E-mail adresa je obavezna.</span>
+          }
+          @if (f['email'].errors?.['email']) {
+            <span>Unesite validnu e-mail adresu (npr. klijent@primer.com).</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="napomene" class="form-label text-secondary fw-semibold small">Napomene (opciono)</label>
+      <textarea id="napomene" formControlName="napomene" rows="3" class="form-control" style="resize: none;"></textarea>
+    </div>
+
+    <div class="modal-footer px-0 pb-0 pt-3">
+      <button type="button" class="btn btn-secondary" (click)="otkazi()">Otkaži</button>
+      <button type="submit" class="btn btn-primary" [disabled]="slanje()">
+        Sačuvaj
+      </button>
+    </div>
+  </form>
+</div>

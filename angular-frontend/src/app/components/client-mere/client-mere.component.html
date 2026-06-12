@@ -1,0 +1,136 @@
+<div class="modal-header bg-light">
+  <h5 class="modal-title fw-bold text-dark">Mere klijenta</h5>
+  <button type="button" class="btn-close" (click)="zatvoriModal()"></button>
+</div>
+
+<div class="modal-body">
+  @if (greskaPoruka()) {
+    <div class="alert alert-danger py-2" role="alert">
+      {{ greskaPoruka() }}
+    </div>
+  }
+
+  @if (listaMera().length === 0) {
+    <div class="text-center text-muted py-3">
+      Nema unetih mera za ovog klijenta.
+    </div>
+  }
+
+  @for (m of listaMera(); track m.mereid) {
+    <div class="card border border-light-subtle bg-light mb-3 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="card-title fw-bold text-primary mb-0">
+            {{ m.tipodece }}
+            <small class="text-muted fw-normal ms-2">({{ m.datumunosa | date:'dd.MM.yyyy' }})</small>
+          </h6>
+          @if (authService.canEdit()) {
+            <button (click)="obrisiMeru(m.mereid)" class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size: 11px;">
+              Obrisi
+            </button>
+          }
+        </div>
+        <div class="row text-secondary small">
+          <div class="col-6 col-sm-3">Obim grudi: <strong class="text-dark">{{ m.obimgrudi }} cm</strong></div>
+          <div class="col-6 col-sm-3">Obim struka: <strong class="text-dark">{{ m.obimstruka }} cm</strong></div>
+          <div class="col-6 col-sm-3">Obim kukova: <strong class="text-dark">{{ m.obimkukova }} cm</strong></div>
+          <div class="col-6 col-sm-3">Duzina rukava: <strong class="text-dark">{{ m.duzinarukava }} cm</strong></div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (authService.canEdit()) {
+    <button (click)="toggleForma()" class="btn btn-outline-primary btn-sm mb-3">
+      @if (prikaziFormuZaMere()) {
+        Otkaži unos mera
+      } @else {
+        Dodaj nove mere
+      }
+    </button>
+  }
+
+  @if (authService.canEdit() && prikaziFormuZaMere()) {
+    <div class="p-3 border rounded bg-white shadow-inner">
+      <form [formGroup]="mereForm" (ngSubmit)="sacuvajMere()" novalidate>
+        <div class="mb-3">
+          <label for="tipodece" class="form-label text-secondary fw-semibold small">Tip odece *</label>
+          <input
+            type="text"
+            id="tipodece"
+            formControlName="tipodece"
+            class="form-control"
+            [class.is-invalid]="f['tipodece'].invalid && (f['tipodece'].dirty || f['tipodece'].touched)"
+          />
+          @if (f['tipodece'].invalid && (f['tipodece'].dirty || f['tipodece'].touched)) {
+            <div class="text-danger small mt-1">
+              Tip odece je obavezno polje.
+            </div>
+          }
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-md-6">
+            <label for="obimgrudi" class="form-label text-secondary fw-semibold small">Obim grudi (cm) *</label>
+            <input
+              type="number"
+              id="obimgrudi"
+              formControlName="obimgrudi"
+              class="form-control"
+              [class.is-invalid]="f['obimgrudi'].invalid && (f['obimgrudi'].dirty || f['obimgrudi'].touched)"
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="obimstruka" class="form-label text-secondary fw-semibold small">Obim struka (cm) *</label>
+            <input
+              type="number"
+              id="obimstruka"
+              formControlName="obimstruka"
+              class="form-control"
+              [class.is-invalid]="f['obimstruka'].invalid && (f['obimstruka'].dirty || f['obimstruka'].touched)"
+            />
+          </div>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-md-6">
+            <label for="obimkukova" class="form-label text-secondary fw-semibold small">Obim kukova (cm) *</label>
+            <input
+              type="number"
+              id="obimkukova"
+              formControlName="obimkukova"
+              class="form-control"
+              [class.is-invalid]="f['obimkukova'].invalid && (f['obimkukova'].dirty || f['obimkukova'].touched)"
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="duzinarukava" class="form-label text-secondary fw-semibold small">Duzina rukava (cm) *</label>
+            <input
+              type="number"
+              id="duzinarukava"
+              formControlName="duzinarukava"
+              class="form-control"
+              [class.is-invalid]="f['duzinarukava'].invalid && (f['duzinarukava'].dirty || f['duzinarukava'].touched)"
+            />
+          </div>
+        </div>
+
+        @if (mereForm.invalid && (mereForm.dirty || mereForm.touched)) {
+          <div class="text-danger small mb-3">
+            Popunite sva obavezna polja. Mere moraju biti od 40 do 150 cm.
+          </div>
+        }
+
+        <button type="submit" class="btn btn-primary btn-sm w-100" [disabled]="slanje()">
+          Sacuvaj mere
+        </button>
+      </form>
+    </div>
+  }
+</div>
+
+<div class="modal-footer bg-light">
+  <button type="button" class="btn btn-secondary btn-sm" (click)="zatvoriModal()">Zatvori</button>
+</div>
