@@ -1,4 +1,6 @@
 {
+  "outputDirectory": "dist/angular-frontend/browser",
+  "buildCommand": "npm run build",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
